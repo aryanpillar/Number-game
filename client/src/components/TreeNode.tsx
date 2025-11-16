@@ -11,15 +11,8 @@ interface TreeNodeProps {
 
 function TreeNode({ node, isRoot = false }: TreeNodeProps) {
   const { isAuthenticated } = useAuth();
-  const [isExpanded, setIsExpanded] = useState(true);
   const [showAddOperation, setShowAddOperation] = useState(false);
   const hasChildren = node.children && node.children.length > 0;
-
-  const toggleExpand = () => {
-    if (hasChildren) {
-      setIsExpanded(!isExpanded);
-    }
-  };
 
   const getOperationSymbol = (operation: string | null): string => {
     switch (operation) {
