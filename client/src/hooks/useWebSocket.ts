@@ -21,9 +21,16 @@ export function useWebSocket(options: UseWebSocketOptions) {
   const reconnectDelay = 3000;
 
   const connect = useCallback(() => {
-    // Determine WebSocket URL based on current location
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}`;
+    // Determine WebSocket URL
+    let wsUrl: string;
+    if (import.meta.env.VITE_WS_URL) {
+      // Production: use environment variable
+      wsUrl = import.meta.env.VITE_WS_URL;
+    } else {
+      // Development: use current location
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      wsUrl = `${protocol}//${window.location.host}`;
+    }
 
     try {
       const ws = new WebSocket(wsUrl);
