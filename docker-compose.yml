@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: calculation-tree-server
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - JWT_SECRET=${JWT_SECRET:-production-secret-key-change-me}
+      - DATABASE_PATH=/app/server/data/database.sqlite
+      - NODE_ENV=production
+    volumes:
+      - server-data:/app/server/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: calculation-tree-client
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  server-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
